@@ -27,23 +27,25 @@ This mod does [b]nothing[/b] on it's own. You use it alongside [url=https://oatm
 
 [h1]Known Bugs (will fix)[/h1]
 [list]
-  [*] MSI (Broken Shackles / Payback antagonist) does not fully spawn
-  [*] Imperial Fiefdom overlord does not fully spawn
-  [*] If you have multiple preferred spawns, the player always spawns in the same one (might fix, not sure if possible)
+  [*] None! but see caveats and compatibility below, and please report any issues find
 [/list]
 
 [h1]Caveats (minor issues, won't fix / not fixable)[/h1]
 [list]
   [*] Large galaxies (roughly 1700+ stars) require a mod that adds more star names (such as [url=https://steamcommunity.com/sharedfiles/filedetails/?id=2907769573]Just Star Names[/url])
-  [*] Sol doesn't get specific neighbors, eg Alpha Centauri, Barnard's Star
+  [*] Sol doesn't get Sol-specific neighbors, eg Alpha Centauri, Barnard's Star
   [*] The "Advanced Neighbors" galaxy setting has no effect (if advanced AI empires are enabled, they can neighbor the player)
   [*] All precursors are "on" regardless of galaxy settings (but the mod [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3039370479]Precursor Selection[/url] does work)
-  [*] Some things need to create additional solar systems, so you'll see some in-game that were not in the online map painter (guaranteed worlds, marauders, fallen empires, some events). Some of these are vanilla behavior, some of these are fixes for static galaxies:
+  [*] Some things need to create additional solar systems, so you'll see some in-game that were not in the online map painter (guaranteed worlds, marauders, fallen empires, some events). Some of these are vanilla behavior, some of these are fixes for static galaxies.
+  [*] Force spawning custom empires [b]does[/b] work, but they are not listed in the galaxy setup screen
 [/list]
 
 [h1]Compatibility[/h1]
 [list]
-  [*] For Stellaris 4.0
+  [*] For Stellaris 4.1
+  [list]
+    [*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3573084816]3.14 patch available here[/url]
+  [/list]
   [*] Should be compatible with most mods
   [*] Modded origins that change homeworld planet class or guaranteed habitable worlds might have minor issues; please report if you encounter anything and I will fix for popular mods
   [*] If you are using a mod that adds galaxy shapes, you must select a vanilla shape (eg elliptical) for the Painted Galaxy size option to appear
