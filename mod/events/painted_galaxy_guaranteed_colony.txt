@@ -39,6 +39,7 @@ event = {
 				# specifically forbidden origins
 				NOT = {
 					has_origin = origin_doomsday
+					has_origin = origin_slavers # MSI, has special logic
 				}
 			}
 			save_event_target_as = painted_galaxy_current_country

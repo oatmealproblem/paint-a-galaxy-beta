@@ -1,0 +1,27 @@
+namespace = painted_galaxy_msi
+
+# spawn missing MSI systems
+event = {
+	id = painted_galaxy_msi.1
+	is_triggered_only = yes
+	hide_window = yes
+	trigger = {
+		is_maybe_painted_galaxy = yes
+		exists = event_target:MSI_country
+		event_target:MSI_country = {
+			count_owned_planet = { count = 1 }
+		}
+	}
+	immediate = {
+		set_spawn_system_batch = begin
+		event_target:MSI_country = {
+			capital_scope.solar_system = {
+				random_neighbor_system = {
+					painted_galaxy_spawn_connected_system = { INITIALIZER = slavers_neighbor_t2_second_colony }
+				}
+				painted_galaxy_spawn_connected_system = { INITIALIZER = slavers_neighbor_t1_first_colony }
+			}
+		}
+		set_spawn_system_batch = end
+	}
+}

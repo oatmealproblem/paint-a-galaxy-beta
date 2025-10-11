@@ -57,6 +57,15 @@ event = {
 							has_origin = origin_mechanists
 							has_origin = origin_syncretic_evolution
 							has_origin = origin_tree_of_life
+							has_origin = origin_slavers # MSI
+						}
+					}
+					weights = {
+						base = 1
+						# choose MSI first
+						modifier = {
+							has_origin = origin_slavers
+							add = 9999
 						}
 					}
 					# claim neighboring systems
