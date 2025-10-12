@@ -602,32 +602,29 @@
 	);
 
 	// debounce mod generation
-	let download_url = $state('');
-	$effect(() => {
-		untrack(() => {
-			download_url = '';
-		});
-		if (step === Step.MOD && galaxy_name.current) {
-			// get the params now to trigger reactivity (untracked once we're in the timeout)
-			const params: Parameters<typeof generate_stellaris_galaxy> = [
-				galaxy_name.current,
-				stars.current,
-				connections.current,
-				wormholes.current,
-				potential_home_stars.current,
-				preferred_home_stars.current,
-				nebulas.current,
-			];
-			const timeout = setTimeout(() => {
-				download_url = URL.createObjectURL(
-					new Blob([generate_stellaris_galaxy(...params)], { type: 'text/plain' }),
-				);
-			}, 500);
-			return () => clearTimeout(timeout);
-		}
-	});
+	function download_mod() {
+		if (!download_link) throw new Error('download_link does not exist');
+		const download_url = URL.createObjectURL(
+			new Blob(
+				[
+					generate_stellaris_galaxy(
+						galaxy_name.current,
+						stars.current,
+						connections.current,
+						wormholes.current,
+						potential_home_stars.current,
+						preferred_home_stars.current,
+						nebulas.current,
+					),
+				],
+				{ type: 'text/plain' },
+			),
+		);
+		download_link.href = download_url;
+		download_link.click();
+	}
 	let download_invalid = $derived(stars.current.length === 0 || connections.current.length === 0);
-	let download_disabled = $derived(download_url.length === 0 || download_invalid);
+	let download_disabled = $derived(!galaxy_name || download_invalid);
 	let download_link = $state<HTMLAnchorElement>();
 
 	function throttle<Args extends unknown[]>(fn: (...args: Args) => void, ms: number) {
@@ -1104,15 +1101,11 @@
 				<label>
 					Name <input bind:value={galaxy_name.current} />
 				</label>
-				<a href={download_url} hidden download="{file_name}.txt" bind:this={download_link}>
-					Download Stellaris Map
-				</a>
+				<a href="/" hidden download="{file_name}.txt" bind:this={download_link}>Download Map</a>
 				<input
 					type="button"
 					disabled={download_disabled}
-					onclick={() => {
-						if (!download_disabled) download_link?.click();
-					}}
+					onclick={download_mod}
 					value="Download Map"
 				/>
 				{#if download_invalid}
