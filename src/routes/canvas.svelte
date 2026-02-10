@@ -9,9 +9,11 @@
 	} from '$lib/constants';
 	import { get_editor } from '$lib/editor.svelte';
 	import { Coordinate } from '$lib/models/coordinate';
+	import type { SolarSystem } from '$lib/models/solar_system';
+	import { Delaunay } from 'd3-delaunay';
 	import { select } from 'd3-selection';
 	import { zoom, zoomIdentity, type D3ZoomEvent } from 'd3-zoom';
-	import { Match, Option } from 'effect';
+	import { Equal, Match, Option } from 'effect';
 
 	const editor = $derived(get_editor()());
 	const project = $derived(editor.project);
@@ -29,9 +31,24 @@
 	>(Option.none());
 
 	let tool_active = $state(false);
+	let snapped_solar_system = $state.raw<Option.Option<SolarSystem>>(
+		Option.none(),
+	);
 	let tool_points = $state<Coordinate[]>([]);
 	let stroke_path = $derived(
 		tool_points.length > 1 ? editor.calculate_path(tool_points) : '',
+	);
+
+	const solar_systems = $derived(project.solar_systems);
+	const delaunay = $derived(
+		solar_systems.length > 0 && editor.step === 'tweak' ?
+			new Delaunay(
+				solar_systems.flatMap((system) => [
+					system.coordinate.x,
+					system.coordinate.y,
+				]),
+			)
+		:	null,
 	);
 
 	let canvas = $state<HTMLCanvasElement>();
@@ -145,36 +162,60 @@
 	}}
 	onmousedown={(e) => {
 		if (current_tool != null) {
-			tool_active = true;
-			tool_points = [get_mouse_coordinates(e).canvas];
+			const point =
+				current_tool?.snap_to_solar_system ?
+					Option.map(snapped_solar_system, (system) => system.coordinate)
+				:	Option.some(get_mouse_coordinates(e).canvas);
+			Option.match(point, {
+				onSome(value) {
+					tool_active = true;
+					tool_points = [value];
+				},
+				onNone() {},
+			});
 		}
 	}}
 	onmousemove={(e) => {
 		const coordinates = get_mouse_coordinates(e);
 		mouse_coordinates = Option.some(coordinates);
-		if (tool_active) {
+		if (delaunay && current_tool?.snap_to_solar_system) {
+			const solar_system_index = delaunay.find(
+				coordinates.canvas.x,
+				coordinates.canvas.y,
+			);
+			const solar_system = solar_systems[solar_system_index];
+			snapped_solar_system = Option.fromNullable(solar_system);
+		}
+		const point =
+			current_tool?.snap_to_solar_system ?
+				Option.map(
+					snapped_solar_system,
+					(solar_system) => solar_system.coordinate,
+				)
+			:	Option.some(coordinates.canvas);
+		if (tool_active && Option.isSome(point)) {
 			Match.value(current_tool?.action_type).pipe(
 				Match.when('single_point', () => {
-					tool_points = [coordinates.canvas];
+					tool_points = [point.value];
 				}),
 				Match.when('double_point', () => {
 					if (tool_points.length === 0) {
-						tool_points = [coordinates.canvas];
-					} else if (tool_points.length === 1) {
-						tool_points.push(coordinates.canvas);
-					} else {
-						tool_points[1] = coordinates.canvas;
+						tool_points = [point.value];
+					} else if (!Equal.equals(tool_points[0], point.value)) {
+						tool_points = [tool_points[0]!, point.value];
 					}
 				}),
-				Match.when('multi_point', () => {}),
+				Match.when('multi_point', () => {
+					tool_points.push(point.value);
+				}),
 				Match.when(undefined, () => {}), // no tool, do nothing
 				Match.exhaustive,
 			);
-			tool_points.push(coordinates.canvas);
 		}
 	}}
 	onmouseleave={() => {
 		mouse_coordinates = Option.none();
+		snapped_solar_system = Option.none();
 	}}
 >
 	<svg
@@ -293,16 +334,16 @@
 				/>
 			{/each}
 			{#each project.solar_systems as solar_system (solar_system.id)}
-				<!-- {#if step === Step.SPAWNS && preferred_home_stars.current.includes([x, y].toString())}
-				<circle
-					cx={x}
-					cy={y}
-					r="5"
-					fill="none"
-					stroke="var(--color-primary-500)"
-					stroke-width="2"
-				/>
-			{/if} -->
+				{#if Option.contains(snapped_solar_system, solar_system) || (current_tool?.snap_to_solar_system && tool_points.some(Equal.equals(solar_system.coordinate)))}
+					<circle
+						cx={solar_system.coordinate.x}
+						cy={solar_system.coordinate.y}
+						r="5"
+						fill="none"
+						stroke="var(--color-primary-500)"
+						stroke-width="2"
+					/>
+				{/if}
 				<circle
 					cx={solar_system.coordinate.x}
 					cy={solar_system.coordinate.y}
@@ -314,6 +355,15 @@
 					stroke-width="1"
 				/>
 			{/each}
+			{#if current_tool?.render.type === 'line' && tool_points.length > 1}
+				<line
+					x1={tool_points.at(0)?.x}
+					y1={tool_points.at(0)?.y}
+					x2={tool_points.at(-1)?.x}
+					y2={tool_points.at(-1)?.y}
+					stroke={current_tool.render.color}
+				/>
+			{/if}
 		</g>
 	</svg>
 	{#if Option.isSome(mouse_coordinates)}

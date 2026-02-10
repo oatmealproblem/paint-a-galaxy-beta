@@ -16,6 +16,7 @@ import {
 	Record,
 	Struct,
 	Match,
+	Equal,
 } from 'effect';
 import { Action } from '$lib/models/action';
 import { KeyVal } from './key_val';
@@ -23,6 +24,7 @@ import getStroke from 'perfect-freehand';
 import type { Coordinate } from '$lib/models/coordinate';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '$lib/constants';
 import { draw_stroke } from '$lib/canvas';
+import { Connection } from '$lib/models/connection';
 
 export class ToolsPersistenceError extends Schema.TaggedError<ToolsPersistenceError>(
 	'ToolsPersistenceError',
@@ -145,7 +147,7 @@ export class Tools extends Context.Tag('Tools')<
 			function get_double_payload(
 				payload: ToolActionTypePayload[keyof ToolActionTypePayload],
 			) {
-				if (Array.isArray(payload) && payload.length !== 2)
+				if (Array.isArray(payload) && payload.length === 2)
 					return payload as [Coordinate, Coordinate];
 				throw Error('Unexpected non-2-element-array tool payload');
 			}
@@ -244,7 +246,32 @@ export class Tools extends Context.Tag('Tools')<
 							}),
 					),
 					Match.when('details_open', () => Effect.succeed([])),
-					Match.when('hyperlane_toggle', () => Effect.succeed([])),
+					Match.when('hyperlane_toggle', () => {
+						const [a_coordinate, b_coordinate] = get_double_payload(payload);
+						const a_solar_system = project.solar_systems.find((solar_system) =>
+							Equal.equals(solar_system.coordinate, a_coordinate),
+						);
+						const b_solar_system = project.solar_systems.find((solar_system) =>
+							Equal.equals(solar_system.coordinate, b_coordinate),
+						);
+						if (a_solar_system && b_solar_system) {
+							const connection = Connection.make({
+								a: a_solar_system.id,
+								b: b_solar_system.id,
+							});
+							if (project.hyperlanes.some(Equal.equals(connection))) {
+								return Effect.succeed([
+									new Action.DeleteHyperlaneAction({ connection }),
+								]);
+							} else {
+								return Effect.succeed([
+									new Action.CreateHyperlaneAction({ connection }),
+								]);
+							}
+						} else {
+							return Effect.succeed([]);
+						}
+					}),
 					Match.exhaustive,
 				);
 

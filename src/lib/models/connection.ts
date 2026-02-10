@@ -24,6 +24,6 @@ export class Connection
 	}
 
 	[Hash.symbol](): number {
-		return Hash.array([this.a, this.b]);
+		return Hash.array([this.a, this.b].toSorted());
 	}
 }
