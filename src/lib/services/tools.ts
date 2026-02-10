@@ -17,6 +17,9 @@ import {
 	Struct,
 	Match,
 	Equal,
+	Iterable,
+	Array,
+	Order,
 } from 'effect';
 import { Action } from '$lib/models/action';
 import { KeyVal } from './key_val';
@@ -197,7 +200,10 @@ export class Tools extends Context.Tag('Tools')<
 							return `M ${center.x - radius} ${center.y} a ${radius} ${radius} 0 0 0 ${radius * 2} 0 a ${radius} ${radius} 0 0 0 ${-radius * 2} 0 Z`;
 						},
 					),
-					Match.when(Match.is('details_open', 'hyperlane_toggle'), () => ''),
+					Match.when(
+						Match.is('details_open', 'hyperlane_toggle', 'nebula_delete'),
+						() => '',
+					),
 					Match.exhaustive,
 				);
 
@@ -284,6 +290,27 @@ export class Tools extends Context.Tag('Tools')<
 							radius,
 						});
 						return Effect.succeed([new Action.CreateNebulaAction({ nebula })]);
+					}),
+					Match.when('nebula_delete', () => {
+						const coordinate = get_single_payload(payload);
+						const nebula = pipe(
+							project.nebulas,
+							Iterable.filter(
+								(nebula) =>
+									nebula.coordinate.distance_to(coordinate) <= nebula.radius,
+							),
+							Array.sortBy(
+								Order.mapInput(Order.number, (nebula) =>
+									nebula.coordinate.distance_to(coordinate),
+								),
+							),
+							Array.get(0),
+						);
+						return Option.match(nebula, {
+							onSome: (nebula) =>
+								Effect.succeed([new Action.DeleteNebulaAction({ nebula })]),
+							onNone: () => Effect.succeed([]),
+						});
 					}),
 					Match.exhaustive,
 				);

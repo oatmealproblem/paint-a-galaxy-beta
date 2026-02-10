@@ -140,7 +140,7 @@
 	onmouseup={() => {
 		if (ctx && tool_active) {
 			if (editor.tool.action_type === 'single_point' && tool_points[0]) {
-				editor.apply_tool([tool_points[0]], ctx);
+				editor.apply_tool(tool_points[0], ctx);
 			} else if (tool_points.length > 1) {
 				editor.apply_tool(tool_points, ctx);
 			}
