@@ -25,6 +25,7 @@ import type { Coordinate } from '$lib/models/coordinate';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '$lib/constants';
 import { draw_stroke } from '$lib/canvas';
 import { Connection } from '$lib/models/connection';
+import { Nebula } from '$lib/models/nebula';
 
 export class ToolsPersistenceError extends Schema.TaggedError<ToolsPersistenceError>(
 	'ToolsPersistenceError',
@@ -188,11 +189,14 @@ export class Tools extends Context.Tag('Tools')<
 							.concat('Z')
 							.join('');
 					}),
-					Match.when(Match.is('circle_draw', 'circle_erase'), () => {
-						const [center, edge] = get_double_payload(payload);
-						const radius = center.distance_to(edge);
-						return `M ${center.x - radius} ${center.y} a ${radius} ${radius} 0 0 0 ${radius * 2} 0 a ${radius} ${radius} 0 0 0 ${-radius * 2} 0 Z`;
-					}),
+					Match.when(
+						Match.is('circle_draw', 'circle_erase', 'nebula_create'),
+						() => {
+							const [center, edge] = get_double_payload(payload);
+							const radius = center.distance_to(edge);
+							return `M ${center.x - radius} ${center.y} a ${radius} ${radius} 0 0 0 ${radius * 2} 0 a ${radius} ${radius} 0 0 0 ${-radius * 2} 0 Z`;
+						},
+					),
 					Match.when(Match.is('details_open', 'hyperlane_toggle'), () => ''),
 					Match.exhaustive,
 				);
@@ -271,6 +275,15 @@ export class Tools extends Context.Tag('Tools')<
 						} else {
 							return Effect.succeed([]);
 						}
+					}),
+					Match.when('nebula_create', () => {
+						const [center, edge] = get_double_payload(payload);
+						const radius = Math.round(center.distance_to(edge));
+						const nebula = new Nebula({
+							coordinate: center.to_rounded(),
+							radius,
+						});
+						return Effect.succeed([new Action.CreateNebulaAction({ nebula })]);
 					}),
 					Match.exhaustive,
 				);

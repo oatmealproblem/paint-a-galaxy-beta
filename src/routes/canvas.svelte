@@ -17,6 +17,10 @@
 
 	const editor = $derived(get_editor()());
 	const project = $derived(editor.project);
+	const solar_systems = $derived(project.solar_systems);
+	const hyperlanes = $derived(project.hyperlanes);
+	const wormholes = $derived(project.wormholes);
+	const nebulas = $derived(project.nebulas);
 	const current_tool = $derived(
 		editor.step === editor.tool.step ? editor.tool : null,
 	);
@@ -38,8 +42,10 @@
 	let stroke_path = $derived(
 		tool_points.length > 1 ? editor.calculate_path(tool_points) : '',
 	);
+	$effect(() => {
+		console.log(current_tool?.render.type, stroke_path);
+	});
 
-	const solar_systems = $derived(project.solar_systems);
 	const delaunay = $derived(
 		solar_systems.length > 0 && editor.step === 'tweak' ?
 			new Delaunay(
@@ -238,7 +244,9 @@
 				<path
 					d={stroke_path}
 					fill={current_tool.render.color}
-					opacity={editor.tool_settings.opacity}
+					opacity={'opacity' in current_tool.default_settings ?
+						editor.tool_settings.opacity
+					:	1}
 				/>
 			{/if}
 			{#if editor.view_settings.show_center_mark}
@@ -285,7 +293,7 @@
 					stroke-width="2"
 				/>
 			{/if}
-			{#each project.nebulas as nebula (nebula.key)}
+			{#each nebulas as nebula (nebula.key)}
 				<circle
 					cx={nebula.coordinate.x}
 					cy={nebula.coordinate.y}
@@ -297,7 +305,7 @@
 					stroke-opacity="0.5"
 				/>
 			{/each}
-			{#each project.hyperlanes as connection (connection.key)}
+			{#each hyperlanes as connection (connection.key)}
 				{@const from = project.get_solar_system(connection.a).coordinate}
 				{@const to = project.get_solar_system(connection.b).coordinate}
 				<line
@@ -319,7 +327,7 @@
 					stroke-width="1"
 				/>
 			{/each}
-			{#each project.wormholes as connection (connection.key)}
+			{#each wormholes as connection (connection.key)}
 				{@const from = project.get_solar_system(connection.a).coordinate}
 				{@const to = project.get_solar_system(connection.b).coordinate}
 				<line
@@ -333,7 +341,7 @@
 					stroke-dasharray="3"
 				/>
 			{/each}
-			{#each project.solar_systems as solar_system (solar_system.id)}
+			{#each solar_systems as solar_system (solar_system.id)}
 				{#if Option.contains(snapped_solar_system, solar_system) || (current_tool?.snap_to_solar_system && tool_points.some(Equal.equals(solar_system.coordinate)))}
 					<circle
 						cx={solar_system.coordinate.x}

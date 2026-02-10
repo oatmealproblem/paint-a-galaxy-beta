@@ -12,7 +12,7 @@ export const ToolId = Schema.Literal(
 	// tweak
 	'details_open',
 	'hyperlane_toggle',
-	// 'nebula_create',
+	'nebula_create',
 	// 'nebula_delete',
 	// 'solar_system_delete',
 	// 'solar_system_toggle',
@@ -171,6 +171,24 @@ const hyperlane_toggle: _Tool<
 	default_settings: {},
 };
 
+const nebula_create: _Tool<
+	'nebula_create',
+	'double_point',
+	Record<string, never>
+> = {
+	id: 'nebula_create',
+	name: 'Create Nebula',
+	description: 'TODO',
+	step: 'tweak',
+	action_type: 'double_point',
+	snap_to_solar_system: false,
+	render: {
+		type: 'stroke',
+		color: 'var(--color-primary-500)',
+	},
+	default_settings: {},
+};
+
 export type ToolActionTypePayload = {
 	multi_point: Coordinate[];
 	single_point: Coordinate;
@@ -184,6 +202,7 @@ export const tools = {
 	circle_erase,
 	details_open,
 	hyperlane_toggle,
+	nebula_create,
 } satisfies Record<
 	ToolId,
 	_Tool<
