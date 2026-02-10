@@ -1,3 +1,13 @@
-export function are_points_equal(p1: [number, number], p2: [number, number]) {
-	return p1[0] === p2[0] && p1[1] === p2[1];
+export function throttle<Args extends unknown[]>(
+	fn: (...args: Args) => void,
+	ms: number,
+) {
+	let last = 0;
+	return function (...args: Args) {
+		const now = Date.now();
+		if (now - last >= ms) {
+			fn(...args);
+			last = now;
+		}
+	};
 }
