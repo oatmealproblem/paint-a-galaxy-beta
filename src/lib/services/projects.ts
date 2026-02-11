@@ -221,14 +221,8 @@ export class Projects extends Context.Tag('Projects')<
 						{
 							strict: true,
 							decode: (input: string) =>
-								input
-									.split(',')
-									.map((s) => parseInt(s) + LEGACY_COORDINATE_OFFSET) as [
-									number,
-									number,
-								],
-							encode: ([x, y]) =>
-								`${x - LEGACY_COORDINATE_OFFSET},${y - LEGACY_COORDINATE_OFFSET}`,
+								input.split(',').map((s) => parseInt(s)) as [number, number],
+							encode: ([x, y]) => `${x},${y}`,
 						},
 					);
 
