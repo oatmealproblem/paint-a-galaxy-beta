@@ -1,6 +1,6 @@
 // canvas size (the html <canvas>, the overlayed <svg>, and the Stellaris map)
-export const CANVAS_WIDTH = 900;
-export const CANVAS_HEIGHT = 900;
+export const CANVAS_WIDTH = 1000;
+export const CANVAS_HEIGHT = 1000;
 export const CANVAS_BACKGROUND = '#000000';
 // size of each "arm" of the plus sign marking the center of the canvas
 export const CENTER_MARK_SIZE = 10;

@@ -59,7 +59,13 @@
 	$effect(() => {
 		createImageBitmap(project.canvas).then((bitmap) => {
 			ctx?.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-			ctx?.drawImage(bitmap, 0, 0);
+			ctx?.drawImage(
+				bitmap,
+				// normally bitmap size == canvas size, so this will be 0,0
+				// but legacy project bitmaps are 900x900 and need to be centered
+				(CANVAS_WIDTH - bitmap.width) / 2,
+				(CANVAS_HEIGHT - bitmap.height) / 2,
+			);
 		});
 	});
 

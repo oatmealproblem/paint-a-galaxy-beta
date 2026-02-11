@@ -194,14 +194,24 @@ export class Projects extends Context.Tag('Projects')<
 			}
 
 			function get_legacy_localstorage(): Effect.Effect<Project> {
+				// legacy canvas was 900x900, not 1000x1000; coordinates need to be offset by 50 to compensate
+				const LEGACY_COORDINATE_OFFSET = 50;
 				return Effect.promise(async () => {
 					const CoordinateFromTuple = Schema.transform(
 						Schema.Tuple(Schema.Int, Schema.Int),
 						Coordinate,
 						{
 							strict: true,
-							decode: ([x, y]) => Coordinate.make({ x, y }),
-							encode: ({ x, y }) => [x, y] as const,
+							decode: ([x, y]) =>
+								Coordinate.make({
+									x: x + LEGACY_COORDINATE_OFFSET,
+									y: y + LEGACY_COORDINATE_OFFSET,
+								}),
+							encode: ({ x, y }) =>
+								[
+									x - LEGACY_COORDINATE_OFFSET,
+									y - LEGACY_COORDINATE_OFFSET,
+								] as const,
 						},
 					);
 
@@ -211,8 +221,14 @@ export class Projects extends Context.Tag('Projects')<
 						{
 							strict: true,
 							decode: (input: string) =>
-								input.split(',').map((s) => parseInt(s)) as [number, number],
-							encode: ([x, y]) => `${x},${y}`,
+								input
+									.split(',')
+									.map((s) => parseInt(s) + LEGACY_COORDINATE_OFFSET) as [
+									number,
+									number,
+								],
+							encode: ([x, y]) =>
+								`${x - LEGACY_COORDINATE_OFFSET},${y - LEGACY_COORDINATE_OFFSET}`,
 						},
 					);
 
@@ -262,13 +278,16 @@ export class Projects extends Context.Tag('Projects')<
 							strict: true,
 							decode: ([x, y, r]) =>
 								Nebula.make({
-									coordinate: Coordinate.make({ x, y }),
+									coordinate: Coordinate.make({
+										x: x + LEGACY_COORDINATE_OFFSET,
+										y: y + LEGACY_COORDINATE_OFFSET,
+									}),
 									radius: r,
 								}),
 							encode: (nebula) =>
 								[
-									nebula.coordinate.x,
-									nebula.coordinate.y,
+									nebula.coordinate.x - LEGACY_COORDINATE_OFFSET,
+									nebula.coordinate.y - LEGACY_COORDINATE_OFFSET,
 									nebula.radius,
 								] as const,
 						},
