@@ -10,7 +10,7 @@ export const ToolId = Schema.Literal(
 	'circle_draw',
 	'circle_erase',
 	// tweak
-	'details_open',
+	// 'details_open',
 	'hyperlane_toggle',
 	'nebula_create',
 	'nebula_delete',
@@ -135,23 +135,23 @@ const circle_erase: _Tool<
 	},
 };
 
-const details_open: _Tool<
-	'details_open',
-	'single_point',
-	Record<string, never>
-> = {
-	id: 'details_open',
-	name: 'Open Details',
-	description: 'TODO',
-	step: 'tweak',
-	action_type: 'single_point',
-	snap_to_solar_system: true,
-	render: {
-		type: 'none',
-		color: 'none',
-	},
-	default_settings: {},
-};
+// const details_open: _Tool<
+// 	'details_open',
+// 	'single_point',
+// 	Record<string, never>
+// > = {
+// 	id: 'details_open',
+// 	name: 'Open Details',
+// 	description: 'TODO',
+// 	step: 'tweak',
+// 	action_type: 'single_point',
+// 	snap_to_solar_system: true,
+// 	render: {
+// 		type: 'none',
+// 		color: 'none',
+// 	},
+// 	default_settings: {},
+// };
 
 const hyperlane_toggle: _Tool<
 	'hyperlane_toggle',
@@ -308,7 +308,7 @@ export const tools = {
 	freehand_erase,
 	circle_draw,
 	circle_erase,
-	details_open,
+	// details_open,
 	hyperlane_toggle,
 	nebula_create,
 	nebula_delete,
