@@ -237,15 +237,6 @@
 					style:opacity={editor.step === 'paint' ? '100%' : '50%'}
 				></canvas>
 			</foreignObject>
-			{#if current_tool?.render.type === 'stroke'}
-				<path
-					d={stroke_path}
-					fill={current_tool.render.color}
-					opacity={'opacity' in current_tool.default_settings ?
-						editor.tool_settings.opacity
-					:	1}
-				/>
-			{/if}
 			{#if editor.view_settings.show_center_mark}
 				<path
 					d="M {CANVAS_WIDTH / 2} {CANVAS_HEIGHT / 2 - CENTER_MARK_SIZE}
@@ -288,6 +279,51 @@
 					class="stroke-error-500"
 					fill="url(#map_limit_pattern)"
 					stroke-width="2"
+				/>
+			{/if}
+			{#if editor.view_settings.show_l_cluster}
+				{@const pattern_size = 20}
+				{@const stripe_size = 5}
+				<pattern
+					id="l_cluster_pattern"
+					patternUnits="userSpaceOnUse"
+					patternTransform="rotate(-45)"
+					height={pattern_size}
+					width={pattern_size}
+				>
+					<rect height={pattern_size} width={pattern_size} fill="none" />
+					<rect
+						height={stripe_size}
+						width={pattern_size}
+						class="fill-warning-500/25"
+					/>
+				</pattern>
+				<circle
+					cx={CANVAS_WIDTH / 2 + 420}
+					cy={CANVAS_HEIGHT / 2 - 420}
+					r={70}
+					class="stroke-warning-500"
+					fill="url(#l_cluster_pattern)"
+					stroke-width="2"
+				/>
+				<text
+					x={CANVAS_WIDTH / 2 + 420}
+					y={CANVAS_HEIGHT / 2 - 420}
+					class="fill-warning-500"
+					dominant-baseline="middle"
+					text-anchor="middle"
+					font-size={24}
+				>
+					L-Cluster
+				</text>
+			{/if}
+			{#if current_tool?.render.type === 'stroke'}
+				<path
+					d={stroke_path}
+					fill={current_tool.render.color}
+					opacity={'opacity' in current_tool.default_settings ?
+						editor.tool_settings.opacity
+					:	1}
 				/>
 			{/if}
 			{#each nebulas as nebula (nebula.key)}

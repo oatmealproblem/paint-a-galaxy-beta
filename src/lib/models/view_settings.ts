@@ -15,6 +15,13 @@ export class ViewSettings extends Schema.Class<ViewSettings>('ViewSettings')({
 			decoding: () => true,
 		}),
 	),
+	show_l_cluster: Schema.Boolean.pipe(
+		Schema.optional,
+		Schema.withDefaults({
+			constructor: () => true,
+			decoding: () => true,
+		}),
+	),
 }) {
 	static default() {
 		return this.make({});

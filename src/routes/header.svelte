@@ -207,12 +207,19 @@
 							<CheckIcon class="size-4" />
 						</Menu.ItemIndicator>
 					</Menu.OptionItem> -->
-					<!-- <Menu.OptionItem type="checkbox" checked={false} value="l-cluster">
+					<Menu.OptionItem
+						type="checkbox"
+						value="show_l_cluster"
+						checked={editor().view_settings.show_l_cluster}
+						onCheckedChange={(checked) => {
+							editor().update_view_setting('show_l_cluster', checked);
+						}}
+					>
 						<Menu.ItemText>Show L-Cluster</Menu.ItemText>
 						<Menu.ItemIndicator class="hidden data-[state=checked]:block">
 							<CheckIcon class="size-4" />
 						</Menu.ItemIndicator>
-					</Menu.OptionItem> -->
+					</Menu.OptionItem>
 					<!-- <Menu.Separator /> -->
 					<!-- <Menu.OptionItem type="checkbox" checked={false} value="grid">
 						<Menu.ItemText>Show Grid</Menu.ItemText>
