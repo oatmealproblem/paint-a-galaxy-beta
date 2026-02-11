@@ -2,7 +2,6 @@
 	import { Icons } from '$lib/components/icons';
 	import SectionHeader from '$lib/components/section_header.svelte';
 	import Slider from '$lib/components/slider.svelte';
-	import { CANVAS_HEIGHT, CANVAS_WIDTH } from '$lib/constants';
 	import { get_editor } from '$lib/editor.svelte';
 	import { Menu, Portal, Switch } from '@skeletonlabs/skeleton-svelte';
 

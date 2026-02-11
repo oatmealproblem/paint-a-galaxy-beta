@@ -209,6 +209,8 @@ export class Tools extends Context.Tag('Tools')<
 							'nebula_delete',
 							'solar_system_create',
 							'solar_system_delete',
+							'spawn_preferred_toggle',
+							'spawn_toggle',
 						),
 						() => '',
 					),
@@ -370,6 +372,52 @@ export class Tools extends Context.Tag('Tools')<
 										new Action.DeleteWormholeAction({ connection }),
 								),
 								new Action.DeleteSolarSystemAction({ solar_system }),
+							]);
+						} else {
+							return Effect.succeed([]);
+						}
+					}),
+					Match.when('spawn_preferred_toggle', () => {
+						const coordinate = get_single_payload(payload).to_rounded();
+						const solar_system = project.solar_systems.find((solar_system) =>
+							Equal.equals(solar_system.coordinate, coordinate),
+						);
+						if (solar_system) {
+							const updated_solar_system = new SolarSystem({
+								...solar_system,
+								spawn_type:
+									solar_system.spawn_type === 'preferred' ?
+										'disabled'
+									:	'preferred',
+							});
+							return Effect.succeed([
+								new Action.UpdateSolarSystemAction({
+									old_value: solar_system,
+									new_value: updated_solar_system,
+								}),
+							]);
+						} else {
+							return Effect.succeed([]);
+						}
+					}),
+					Match.when('spawn_toggle', () => {
+						const coordinate = get_single_payload(payload).to_rounded();
+						const solar_system = project.solar_systems.find((solar_system) =>
+							Equal.equals(solar_system.coordinate, coordinate),
+						);
+						if (solar_system) {
+							const updated_solar_system = new SolarSystem({
+								...solar_system,
+								spawn_type:
+									solar_system.spawn_type === 'disabled' ?
+										'enabled'
+									:	'disabled',
+							});
+							return Effect.succeed([
+								new Action.UpdateSolarSystemAction({
+									old_value: solar_system,
+									new_value: updated_solar_system,
+								}),
 							]);
 						} else {
 							return Effect.succeed([]);

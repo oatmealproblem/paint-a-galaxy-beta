@@ -16,8 +16,8 @@ export const ToolId = Schema.Literal(
 	'nebula_delete',
 	'solar_system_create',
 	'solar_system_delete',
-	// 'spawn_preferred_toggle',
-	// 'spawn_toggle',
+	'spawn_preferred_toggle',
+	'spawn_toggle',
 	// 'wormhole_toggle',
 );
 export type ToolId = typeof ToolId.Type;
@@ -243,6 +243,42 @@ const solar_system_delete: _Tool<
 	default_settings: {},
 };
 
+const spawn_preferred_toggle: _Tool<
+	'spawn_preferred_toggle',
+	'single_point',
+	Record<string, never>
+> = {
+	id: 'spawn_preferred_toggle',
+	name: 'Toggle Preferred Spawn',
+	description: 'TODO',
+	step: 'tweak',
+	action_type: 'single_point',
+	snap_to_solar_system: true,
+	render: {
+		type: 'none',
+		color: 'none',
+	},
+	default_settings: {},
+};
+
+const spawn_toggle: _Tool<
+	'spawn_toggle',
+	'single_point',
+	Record<string, never>
+> = {
+	id: 'spawn_toggle',
+	name: 'Toggle Spawn',
+	description: 'TODO',
+	step: 'tweak',
+	action_type: 'single_point',
+	snap_to_solar_system: true,
+	render: {
+		type: 'none',
+		color: 'none',
+	},
+	default_settings: {},
+};
+
 export type ToolActionTypePayload = {
 	multi_point: Coordinate[];
 	single_point: Coordinate;
@@ -260,6 +296,8 @@ export const tools = {
 	nebula_delete,
 	solar_system_create,
 	solar_system_delete,
+	spawn_preferred_toggle,
+	spawn_toggle,
 } satisfies Record<
 	ToolId,
 	_Tool<

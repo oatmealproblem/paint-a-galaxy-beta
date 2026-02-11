@@ -346,19 +346,32 @@
 						r="5"
 						fill="none"
 						stroke="var(--color-primary-500)"
-						stroke-width="2"
+						stroke-width="1"
 					/>
 				{/if}
-				<circle
-					cx={solar_system.coordinate.x}
-					cy={solar_system.coordinate.y}
-					r={2.5}
-					fill={solar_system.spawn_type === 'disabled' ?
-						'var(--color-surface-50)'
-					:	'var(--color-primary-500)'}
-					stroke="var(--color-surface-950)"
-					stroke-width="1"
-				/>
+				{#if solar_system.spawn_type === 'preferred'}
+					<path
+						d="M {solar_system.coordinate.x} {solar_system.coordinate.y - 4}
+						   l 4 4
+						   l -4 4
+						   l -4 -4
+						   Z"
+						fill="var(--color-secondary-500)"
+						stroke="var(--color-surface-950)"
+						stroke-width="1"
+					/>
+				{:else}
+					<circle
+						cx={solar_system.coordinate.x}
+						cy={solar_system.coordinate.y}
+						r={2.5}
+						fill={solar_system.spawn_type === 'disabled' ?
+							'var(--color-surface-50)'
+						:	'var(--color-secondary-300)'}
+						stroke="var(--color-surface-950)"
+						stroke-width="1"
+					/>
+				{/if}
 			{/each}
 			{#if current_tool?.render.type === 'line' && tool_points.length > 1}
 				<line
