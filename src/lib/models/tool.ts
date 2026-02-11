@@ -55,7 +55,7 @@ const freehand_draw: _Tool<
 	{ size: number; blur: number; opacity: number }
 > = {
 	id: 'freehand_draw',
-	name: 'Draw',
+	name: 'Draw Freehand',
 	description: 'TODO',
 	step: 'paint',
 	action_type: 'multi_point',
@@ -77,7 +77,7 @@ const freehand_erase: _Tool<
 	{ size: number; blur: number; opacity: number }
 > = {
 	id: 'freehand_erase',
-	name: 'Erase',
+	name: 'Erase Freehand',
 	description: 'TODO',
 	step: 'paint',
 	action_type: 'multi_point',
@@ -99,7 +99,7 @@ const circle_draw: _Tool<
 	{ blur: number; opacity: number }
 > = {
 	id: 'circle_draw',
-	name: 'Circle',
+	name: 'Draw Circle',
 	description: 'TODO',
 	step: 'paint',
 	action_type: 'double_point',
@@ -303,20 +303,21 @@ export type ToolActionTypePayload = {
 	double_point: [Coordinate, Coordinate];
 };
 
+// the order of tools here determines their order in the UI
 export const tools = {
 	freehand_draw,
 	freehand_erase,
 	circle_draw,
 	circle_erase,
 	// details_open,
-	hyperlane_toggle,
-	nebula_create,
-	nebula_delete,
 	solar_system_create,
 	solar_system_delete,
-	spawn_preferred_toggle,
 	spawn_toggle,
+	spawn_preferred_toggle,
+	hyperlane_toggle,
 	wormhole_toggle,
+	nebula_create,
+	nebula_delete,
 } satisfies Record<
 	ToolId,
 	_Tool<
