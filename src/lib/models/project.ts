@@ -2,8 +2,8 @@ import { Array, Option, pipe, Schema } from 'effect';
 import { Connection } from './connection';
 import { Nebula } from './nebula';
 import { SolarSystem, SolarSystemId } from './solar_system';
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from '$lib/constants';
 import { GeneratorSettings } from './generator_settings';
+import { make_blank_image } from '$lib/canvas';
 
 export class ProjectListing extends Schema.Class<ProjectListing>(
 	'ProjectListing',
@@ -47,10 +47,7 @@ export class Project extends Schema.Class<Project>('Project')({
 	}
 
 	static async make_empty(name: string) {
-		const canvas = await new OffscreenCanvas(
-			CANVAS_WIDTH,
-			CANVAS_HEIGHT,
-		).convertToBlob({ quality: 1, type: 'image/png' });
+		const canvas = await make_blank_image();
 
 		return Project.make({
 			name,
