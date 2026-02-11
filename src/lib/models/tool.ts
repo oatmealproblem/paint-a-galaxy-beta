@@ -18,7 +18,7 @@ export const ToolId = Schema.Literal(
 	'solar_system_delete',
 	'spawn_preferred_toggle',
 	'spawn_toggle',
-	// 'wormhole_toggle',
+	'wormhole_toggle',
 );
 export type ToolId = typeof ToolId.Type;
 
@@ -279,6 +279,24 @@ const spawn_toggle: _Tool<
 	default_settings: {},
 };
 
+const wormhole_toggle: _Tool<
+	'wormhole_toggle',
+	'double_point',
+	Record<string, never>
+> = {
+	id: 'wormhole_toggle',
+	name: 'Toggle Wormhole',
+	description: 'TODO',
+	step: 'tweak',
+	action_type: 'double_point',
+	snap_to_solar_system: true,
+	render: {
+		type: 'line',
+		color: 'var(--color-primary-500)',
+	},
+	default_settings: {},
+};
+
 export type ToolActionTypePayload = {
 	multi_point: Coordinate[];
 	single_point: Coordinate;
@@ -298,6 +316,7 @@ export const tools = {
 	solar_system_delete,
 	spawn_preferred_toggle,
 	spawn_toggle,
+	wormhole_toggle,
 } satisfies Record<
 	ToolId,
 	_Tool<

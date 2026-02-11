@@ -332,7 +332,7 @@
 					y1={from.y}
 					x2={to.x}
 					y2={to.y}
-					stroke="#FF00FF"
+					stroke="var(--color-tertiary-600)"
 					stroke-opacity="1"
 					stroke-width="1"
 					stroke-dasharray="3"

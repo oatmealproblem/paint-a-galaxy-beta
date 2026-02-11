@@ -211,6 +211,7 @@ export class Tools extends Context.Tag('Tools')<
 							'solar_system_delete',
 							'spawn_preferred_toggle',
 							'spawn_toggle',
+							'wormhole_toggle',
 						),
 						() => '',
 					),
@@ -419,6 +420,44 @@ export class Tools extends Context.Tag('Tools')<
 									new_value: updated_solar_system,
 								}),
 							]);
+						} else {
+							return Effect.succeed([]);
+						}
+					}),
+					Match.when('wormhole_toggle', () => {
+						const [a_coordinate, b_coordinate] = get_double_payload(payload);
+						const a_solar_system = project.solar_systems.find((solar_system) =>
+							Equal.equals(solar_system.coordinate, a_coordinate),
+						);
+						const b_solar_system = project.solar_systems.find((solar_system) =>
+							Equal.equals(solar_system.coordinate, b_coordinate),
+						);
+						if (a_solar_system && b_solar_system) {
+							const connection = Connection.make({
+								a: a_solar_system.id,
+								b: b_solar_system.id,
+							});
+							if (project.wormholes.some(Equal.equals(connection))) {
+								return Effect.succeed([
+									new Action.DeleteWormholeAction({ connection }),
+								]);
+							} else {
+								// each system can only have 1 wormhole, so remove any wormholes that share a system with the new wormhole
+								const overlapping_wormholes = project.wormholes.filter(
+									(wormhole) =>
+										wormhole.a === connection.a ||
+										wormhole.a === connection.b ||
+										wormhole.b === connection.a ||
+										wormhole.b === connection.b,
+								);
+								return Effect.succeed([
+									...overlapping_wormholes.map(
+										(wormhole) =>
+											new Action.DeleteWormholeAction({ connection: wormhole }),
+									),
+									new Action.CreateWormholeAction({ connection }),
+								]);
+							}
 						} else {
 							return Effect.succeed([]);
 						}
