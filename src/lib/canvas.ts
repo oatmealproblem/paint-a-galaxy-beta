@@ -42,7 +42,11 @@ export async function normalize_image(file: File): Promise<Blob> {
 }
 
 export function make_blank_image(): Promise<Blob> {
-	return new OffscreenCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).convertToBlob({
+	const canvas = new OffscreenCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+	// see https://issues.chromium.org/issues/428407023
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Chrome requires ctx for convertToBlob to work
+	const ctx = canvas.getContext('2d');
+	return canvas.convertToBlob({
 		type: 'image/png',
 		quality: 1,
 	});
