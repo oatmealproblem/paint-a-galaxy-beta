@@ -42,9 +42,6 @@
 	let stroke_path = $derived(
 		tool_points.length > 1 ? editor.calculate_path(tool_points) : '',
 	);
-	$effect(() => {
-		console.log(current_tool?.render.type, stroke_path);
-	});
 
 	const delaunay = $derived(
 		solar_systems.length > 0 && editor.step === 'tweak' ?
