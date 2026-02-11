@@ -8,6 +8,7 @@
 	import Tweak from './steps/tweak.svelte';
 	import { get_editor } from '$lib/editor.svelte';
 	import { tools } from '$lib/models/tool';
+	import { generate_stellaris_galaxy } from '$lib/generate_galaxy_txt';
 
 	const steps: { id: Step; name: string; content: Component }[] = [
 		{ id: 'paint', name: 'Paint', content: Paint },
@@ -16,6 +17,17 @@
 	];
 
 	const editor = $derived(get_editor()());
+
+	function handle_download() {
+		const galaxy_txt = generate_stellaris_galaxy(editor.project);
+		const blob = new Blob([galaxy_txt], { type: 'text/plain' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `${editor.project.name}.txt`;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
 </script>
 
 <aside class="w-96 p-4 flex-none">
@@ -61,7 +73,10 @@
 						Back
 					</Steps.PrevTrigger>
 					{#if context().value === steps.length - 1}
-						<button class="btn preset-filled-primary-500">
+						<button
+							class="btn preset-filled-primary-500"
+							onclick={handle_download}
+						>
 							<Icons.Download size={18} />
 							Download
 						</button>
