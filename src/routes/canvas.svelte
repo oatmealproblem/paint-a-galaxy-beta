@@ -451,11 +451,16 @@
 	.canvas {
 		position: relative;
 		align-self: start;
+		user-select: none;
 
 		svg {
 			position: absolute;
 			top: 0;
 			left: 0;
+
+			* {
+				pointer-events: none;
+			}
 		}
 	}
 </style>
