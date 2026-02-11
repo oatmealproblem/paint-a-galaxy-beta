@@ -14,8 +14,8 @@ export const ToolId = Schema.Literal(
 	'hyperlane_toggle',
 	'nebula_create',
 	'nebula_delete',
-	// 'solar_system_delete',
-	// 'solar_system_toggle',
+	'solar_system_create',
+	'solar_system_delete',
 	// 'spawn_preferred_toggle',
 	// 'spawn_toggle',
 	// 'wormhole_toggle',
@@ -207,6 +207,42 @@ const nebula_delete: _Tool<
 	default_settings: {},
 };
 
+const solar_system_create: _Tool<
+	'solar_system_create',
+	'single_point',
+	Record<string, never>
+> = {
+	id: 'solar_system_create',
+	name: 'Create Solar System',
+	description: 'TODO',
+	step: 'tweak',
+	action_type: 'single_point',
+	snap_to_solar_system: false,
+	render: {
+		type: 'none',
+		color: 'none',
+	},
+	default_settings: {},
+};
+
+const solar_system_delete: _Tool<
+	'solar_system_delete',
+	'single_point',
+	Record<string, never>
+> = {
+	id: 'solar_system_delete',
+	name: 'Delete Solar System',
+	description: 'TODO',
+	step: 'tweak',
+	action_type: 'single_point',
+	snap_to_solar_system: true,
+	render: {
+		type: 'none',
+		color: 'none',
+	},
+	default_settings: {},
+};
+
 export type ToolActionTypePayload = {
 	multi_point: Coordinate[];
 	single_point: Coordinate;
@@ -222,6 +258,8 @@ export const tools = {
 	hyperlane_toggle,
 	nebula_create,
 	nebula_delete,
+	solar_system_create,
+	solar_system_delete,
 } satisfies Record<
 	ToolId,
 	_Tool<

@@ -20,6 +20,7 @@ import {
 	Iterable,
 	Array,
 	Order,
+	Number,
 } from 'effect';
 import { Action } from '$lib/models/action';
 import { KeyVal } from './key_val';
@@ -29,6 +30,7 @@ import { CANVAS_HEIGHT, CANVAS_WIDTH } from '$lib/constants';
 import { draw_stroke } from '$lib/canvas';
 import { Connection } from '$lib/models/connection';
 import { Nebula } from '$lib/models/nebula';
+import { SolarSystem, SolarSystemId } from '$lib/models/solar_system';
 
 export class ToolsPersistenceError extends Schema.TaggedError<ToolsPersistenceError>(
 	'ToolsPersistenceError',
@@ -201,7 +203,13 @@ export class Tools extends Context.Tag('Tools')<
 						},
 					),
 					Match.when(
-						Match.is('details_open', 'hyperlane_toggle', 'nebula_delete'),
+						Match.is(
+							'details_open',
+							'hyperlane_toggle',
+							'nebula_delete',
+							'solar_system_create',
+							'solar_system_delete',
+						),
 						() => '',
 					),
 					Match.exhaustive,
@@ -311,6 +319,61 @@ export class Tools extends Context.Tag('Tools')<
 								Effect.succeed([new Action.DeleteNebulaAction({ nebula })]),
 							onNone: () => Effect.succeed([]),
 						});
+					}),
+					Match.when('solar_system_create', () => {
+						const coordinate = get_single_payload(payload).to_rounded();
+						if (
+							project.solar_systems.some((solar_system) =>
+								Equal.equals(solar_system.coordinate, coordinate),
+							)
+						) {
+							return Effect.succeed([]);
+						} else {
+							const id = pipe(
+								project.solar_systems,
+								Iterable.map((solar_system) => solar_system.id),
+								Iterable.reduce(-1, Number.max),
+								Number.increment,
+								SolarSystemId.make,
+							);
+							const solar_system = new SolarSystem({
+								id,
+								coordinate,
+							});
+							return Effect.succeed([
+								new Action.CreateSolarSystemAction({ solar_system }),
+							]);
+						}
+					}),
+					Match.when('solar_system_delete', () => {
+						const coordinate = get_single_payload(payload).to_rounded();
+						const solar_system = project.solar_systems.find((solar_system) =>
+							Equal.equals(solar_system.coordinate, coordinate),
+						);
+						if (solar_system) {
+							const is_connection_to_solar_system = (connection: Connection) =>
+								connection.a === solar_system.id ||
+								connection.b === solar_system.id;
+							const hyperlanes = project.hyperlanes.filter(
+								is_connection_to_solar_system,
+							);
+							const wormholes = project.wormholes.filter(
+								is_connection_to_solar_system,
+							);
+							return Effect.succeed([
+								...hyperlanes.map(
+									(connection) =>
+										new Action.DeleteHyperlaneAction({ connection }),
+								),
+								...wormholes.map(
+									(connection) =>
+										new Action.DeleteWormholeAction({ connection }),
+								),
+								new Action.DeleteSolarSystemAction({ solar_system }),
+							]);
+						} else {
+							return Effect.succeed([]);
+						}
 					}),
 					Match.exhaustive,
 				);
