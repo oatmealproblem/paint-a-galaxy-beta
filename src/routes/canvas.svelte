@@ -140,7 +140,8 @@
 </script>
 
 <svelte:document
-	onmouseup={() => {
+	onmouseup={(e) => {
+		if (e.button !== 0) return;
 		if (ctx && tool_active) {
 			if (editor.tool.action_type === 'single_point' && tool_points[0]) {
 				editor.apply_tool(tool_points[0], ctx);
@@ -194,6 +195,7 @@
 		},
 	}}
 	onmousedown={(e) => {
+		if (e.button !== 0) return;
 		if (current_tool != null) {
 			const point =
 				current_tool?.snap_to_solar_system ?
