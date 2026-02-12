@@ -47,7 +47,7 @@ export class Generator extends Context.Tag('Generator')<
 
 		function delete_wormholes(project: Project): Action[] {
 			return project.wormholes.map((connection) =>
-				Action.DeleteHyperlaneAction.make({ connection }),
+				Action.DeleteWormholeAction.make({ connection }),
 			);
 		}
 
