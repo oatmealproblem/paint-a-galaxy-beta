@@ -164,9 +164,33 @@
 		// svelte does not yet have type defs for command events and listeners
 		// spreading an object bypasses the strict type checking
 		oncommand: (e: { command: string }) => {
-			if (e.command === CUSTOM_COMMAND.reset_zoom) {
-				if (svg) zoom_behavior.transform(select(svg), zoomIdentity);
-			}
+			Match.value(e.command).pipe(
+				Match.when(CUSTOM_COMMAND.reset_zoom, () => {
+					if (svg) zoom_behavior.transform(select(svg), zoomIdentity);
+				}),
+				Match.when(CUSTOM_COMMAND.set_zoom_050, () => {
+					if (svg) zoom_behavior.scaleTo(select(svg), 0.5);
+				}),
+				Match.when(CUSTOM_COMMAND.set_zoom_075, () => {
+					if (svg) zoom_behavior.scaleTo(select(svg), 0.75);
+				}),
+				Match.when(CUSTOM_COMMAND.set_zoom_100, () => {
+					if (svg) zoom_behavior.scaleTo(select(svg), 1);
+				}),
+				Match.when(CUSTOM_COMMAND.set_zoom_150, () => {
+					if (svg) zoom_behavior.scaleTo(select(svg), 1.5);
+				}),
+				Match.when(CUSTOM_COMMAND.set_zoom_200, () => {
+					if (svg) zoom_behavior.scaleTo(select(svg), 2);
+				}),
+				Match.when(CUSTOM_COMMAND.set_zoom_400, () => {
+					if (svg) zoom_behavior.scaleTo(select(svg), 4);
+				}),
+				Match.when(CUSTOM_COMMAND.set_zoom_800, () => {
+					if (svg) zoom_behavior.scaleTo(select(svg), 8);
+				}),
+				Match.orElseAbsurd,
+			);
 		},
 	}}
 	onmousedown={(e) => {

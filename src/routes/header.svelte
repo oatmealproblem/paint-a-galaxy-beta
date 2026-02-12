@@ -179,6 +179,62 @@
 						CUSTOM_COMMAND.reset_zoom,
 						ID.canvas,
 					)}
+					<Menu>
+						<Menu.TriggerItem value="set_zoom">
+							<Menu.ItemText>Set Zoom</Menu.ItemText>
+							<Menu.ItemIndicator>
+								<ChevronRightIcon class="size-4" />
+							</Menu.ItemIndicator>
+							<Portal>
+								<Menu.Positioner>
+									<Menu.Content class="bg-surface-100-900">
+										{@render menu_item_command(
+											'50%',
+											'50%',
+											CUSTOM_COMMAND.set_zoom_050,
+											ID.canvas,
+										)}
+										{@render menu_item_command(
+											'75%',
+											'75%',
+											CUSTOM_COMMAND.set_zoom_075,
+											ID.canvas,
+										)}
+										{@render menu_item_command(
+											'100%',
+											'100%',
+											CUSTOM_COMMAND.set_zoom_100,
+											ID.canvas,
+										)}
+										{@render menu_item_command(
+											'150%',
+											'150%',
+											CUSTOM_COMMAND.set_zoom_150,
+											ID.canvas,
+										)}
+										{@render menu_item_command(
+											'200%',
+											'200%',
+											CUSTOM_COMMAND.set_zoom_200,
+											ID.canvas,
+										)}
+										{@render menu_item_command(
+											'400%',
+											'400%',
+											CUSTOM_COMMAND.set_zoom_400,
+											ID.canvas,
+										)}
+										{@render menu_item_command(
+											'800%',
+											'800%',
+											CUSTOM_COMMAND.set_zoom_800,
+											ID.canvas,
+										)}
+									</Menu.Content>
+								</Menu.Positioner>
+							</Portal>
+						</Menu.TriggerItem>
+					</Menu>
 					<Menu.Separator />
 					<Menu.OptionItem
 						type="checkbox"
