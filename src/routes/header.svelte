@@ -42,9 +42,14 @@
 			'selectionStart' in active_element &&
 			active_element.selectionStart != null;
 		if (is_editing_text) return;
+		// TODO better support for non-Latin keyboards
+		// TODO support metaKey instead of ctrlKey based on navigator.platform
 		if (e.key === 'z' && e.ctrlKey && editor().can_undo) editor().undo();
+		if (e.key === 'я' && e.ctrlKey && editor().can_undo) editor().undo();
 		if (e.key === 'Z' && e.ctrlKey && editor().can_redo) editor().redo();
+		if (e.key === 'Я' && e.ctrlKey && editor().can_redo) editor().redo();
 		if (e.key === 'y' && e.ctrlKey && editor().can_redo) editor().redo();
+		if (e.key === 'н' && e.ctrlKey && editor().can_redo) editor().redo();
 	}
 </script>
 
