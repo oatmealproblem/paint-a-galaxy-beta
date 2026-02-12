@@ -90,7 +90,7 @@ export function generate_stellaris_galaxy(project: Project): string {
 		(solar_system) => solar_system.spawn_type !== 'disabled',
 	);
 	const preferred_home_stars = project.solar_systems.filter(
-		(solar_system) => solar_system.spawn_type !== 'preferred',
+		(solar_system) => solar_system.spawn_type === 'preferred',
 	);
 
 	const ai_empire_settings = `
@@ -262,7 +262,7 @@ export function generate_stellaris_galaxy(project: Project): string {
 	return [
 		'# README for what to do with this file, read the Steam Workshop page https://steamcommunity.com/sharedfiles/filedetails/?id=3532904115',
 		`static_galaxy_scenario = {`,
-		`\tname="${name}"`,
+		`\tname="${project.name}"`,
 		COMMON,
 		ai_empire_settings,
 		size_based_settings,
