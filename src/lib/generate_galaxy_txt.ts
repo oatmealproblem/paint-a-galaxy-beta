@@ -90,7 +90,7 @@ export function generate_stellaris_galaxy(project: Project): string {
 		(solar_system) => solar_system.spawn_type !== 'disabled',
 	);
 	const preferred_home_stars = project.solar_systems.filter(
-		(solar_system) => solar_system.spawn_type !== 'preferred',
+		(solar_system) => solar_system.spawn_type === 'preferred',
 	);
 
 	const ai_empire_settings = `
