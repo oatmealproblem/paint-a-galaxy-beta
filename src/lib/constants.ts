@@ -30,4 +30,11 @@ export const ID = {
 
 export const CUSTOM_COMMAND = {
 	reset_zoom: '--reset-zoom',
+	set_zoom_050: '--set-zoom-050',
+	set_zoom_075: '--set-zoom-075',
+	set_zoom_100: '--set-zoom-100',
+	set_zoom_150: '--set-zoom-150',
+	set_zoom_200: '--set-zoom-200',
+	set_zoom_400: '--set-zoom-400',
+	set_zoom_800: '--set-zoom-800',
 } as const;
