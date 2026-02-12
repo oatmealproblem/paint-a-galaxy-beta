@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Dialog from '$lib/components/dialog.svelte';
-	import { ID } from '$lib/constants';
+	import { CUSTOM_COMMAND, ID } from '$lib/constants';
 	import { get_editor } from '$lib/editor.svelte';
 	import type { EventHandler, FormEventHandler } from 'svelte/elements';
 
@@ -15,13 +15,21 @@
 
 	const onsubmit: EventHandler<SubmitEvent, HTMLFormElement> = (e) => {
 		e.preventDefault();
+
 		const data = new FormData(e.currentTarget);
 		const name = data.get('name');
 		if (typeof name !== 'string') throw new Error('name is not a string');
 		const trimmed = clean_name(name);
 		if (trimmed.length === 0) return;
 		if (editor().projects.some((project) => project.name === trimmed)) return;
+
 		editor().create_project(trimmed);
+		// reset step and camera
+		editor().step = 'paint';
+		const event = new Event('command') as Event & { command: string };
+		event.command = CUSTOM_COMMAND.reset_zoom;
+		document.getElementById(ID.canvas)?.dispatchEvent(event);
+
 		dialog.close();
 	};
 
